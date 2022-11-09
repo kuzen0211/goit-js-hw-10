@@ -1,6 +1,6 @@
 import './css/styles.css';
+import { fetchCountries } from './js/fetchCountries';
 import debounce from 'lodash.debounce';
-import Notiflix from 'notiflix';
 
 const inputValue = document.querySelector('#search-box');
 const listRef = document.querySelector('.country-list');
@@ -17,40 +17,12 @@ inputValue.addEventListener(
   }, 300)
 );
 
-function clearMarkup() {
+export function clearMarkup() {
   listRef.innerHTML = '';
   infoRef.innerHTML = '';
 }
 
-function fetchCountries(name) {
-  fetch(`https://restcountries.com/v3.1/name/${name}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.length > 10) {
-        throw new Error('max country');
-      }
-      renderCountry(data);
-    })
-    .catch(error => {
-      if (error.message === '404') {
-        clearMarkup();
-        Notiflix.Notify.failure('Oops, there is no country with that name');
-      }
-      if (error.message === 'max country') {
-        clearMarkup();
-        Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name'
-        );
-      }
-    });
-}
-
-function renderCountry(countries) {
+export function renderCountry(countries) {
   let markup = '';
 
   clearMarkup();
